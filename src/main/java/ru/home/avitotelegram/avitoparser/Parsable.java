@@ -1,6 +1,6 @@
 package ru.home.avitotelegram.avitoparser;
 
-import ru.home.avitotelegram.itemInformation.CarItem;
+import ru.home.avitotelegram.itemInformation.fullItemInformation.CarItem;
 
 import java.io.IOException;
 import java.util.List;

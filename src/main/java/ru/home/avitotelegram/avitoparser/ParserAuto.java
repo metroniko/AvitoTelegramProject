@@ -1,15 +1,13 @@
 package ru.home.avitotelegram.avitoparser;
 
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import ru.home.avitotelegram.itemInformation.CarItem;
+import ru.home.avitotelegram.itemInformation.fullItemInformation.CarItem;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;

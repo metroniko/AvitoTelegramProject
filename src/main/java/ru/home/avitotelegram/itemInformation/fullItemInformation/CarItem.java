@@ -1,4 +1,4 @@
-package ru.home.avitotelegram.itemInformation;
+package ru.home.avitotelegram.itemInformation.fullItemInformation;
 
 public class CarItem implements AvitoItem {
 

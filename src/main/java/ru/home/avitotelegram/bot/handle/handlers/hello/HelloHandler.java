@@ -1,9 +1,10 @@
-package ru.home.avitotelegram.bot.handle.handlers;
+package ru.home.avitotelegram.bot.handle.handlers.hello;
 
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.home.avitotelegram.bot.botState.BotState;
 import ru.home.avitotelegram.bot.cache.UserCache;
+import ru.home.avitotelegram.bot.handle.handlers.InputMessageHandler;
 import ru.home.avitotelegram.entity.User;
 
 public class HelloHandler implements InputMessageHandler {

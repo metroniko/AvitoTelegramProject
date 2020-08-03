@@ -59,6 +59,9 @@ public class TelegramFacade {
 
         }
 
+        InputMessageHandler currentContext = handlerContext.findCurrentContext(message);
+        currentContext.handle(message);
+
         User user = userCache.getUserById(message.getChatId());
 
         if (user.getBotState() == BotState.ASK_SOMETHING) {

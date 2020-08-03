@@ -6,5 +6,6 @@ public enum BotState {
     UNSUBSCRIBE_THEME,
     ASK_SOMETHING,
     ASK_CARNAME,
-    ASK_CARMARK,
+    ASK_MODEL,
+    PARSE_AUTO,
 }

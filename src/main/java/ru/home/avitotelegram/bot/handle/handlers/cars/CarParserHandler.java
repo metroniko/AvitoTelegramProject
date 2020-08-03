@@ -2,33 +2,31 @@ package ru.home.avitotelegram.bot.handle.handlers.cars;
 
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.home.avitotelegram.avitoparser.ParserAuto;
 import ru.home.avitotelegram.bot.botState.BotState;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.home.avitotelegram.bot.handle.handlers.InputMessageHandler;
 
-import static ru.home.avitotelegram.bot.botState.BotState.SUBSCRIBE_CAR;
+import static ru.home.avitotelegram.bot.botState.BotState.*;
 
 @Component
-public class CarHandler implements InputMessageHandler {
+public class CarParserHandler implements InputMessageHandler {
 
     private ParserAuto autoParser;
-    private BotState botState = SUBSCRIBE_CAR;
+    private BotState botState = PARSE_AUTO;
 
-    public CarHandler(ParserAuto autoParser) {
+    public CarParserHandler(ParserAuto autoParser) {
         this.autoParser = autoParser;
     }
 
     @Override
     public BotState getHandlerName() {
-        return SUBSCRIBE_CAR;
+        return botState;
     }
 
 
     /**
      * ЗАГЛУШКА
-     *
-     *
      * */
     @Override
     public SendMessage handle(Message message) {
