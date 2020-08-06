@@ -30,7 +30,7 @@ public class CarParserHandler implements InputMessageHandler {
      * */
     @Override
     public SendMessage handle(Message message) {
-        return autoParser.parse();
+        return null;
     }
 
 }

@@ -9,6 +9,15 @@ public class CarDTO {
     private List<Long> userSubscribes = new ArrayList<>();
     private String carName;
     private String carMark;
+    private String carPrice;
+
+    public String getCarPrice() {
+        return carPrice;
+    }
+
+    public void setCarPrice(String carPrice) {
+        this.carPrice = carPrice;
+    }
 
     public int getCarDTOId() {
         return carDTOId;

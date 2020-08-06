@@ -15,17 +15,17 @@ import org.telegram.telegrambots.meta.ApiContext;
 @ConfigurationProperties(prefix ="telegrambot")
 public class BotConfiguration {
 
-    private String proxyHost;
-    private int proxyPort;
-    private DefaultBotOptions.ProxyType proxyType;
+    private DefaultBotOptions.ProxyType proxyType = DefaultBotOptions.ProxyType.SOCKS5;
 
     @Bean
     public DefaultBotOptions defaultBotOptionsConfigure() {
         DefaultBotOptions options =
                 ApiContext.getInstance(DefaultBotOptions.class);
+        String proxyHost = "localhost";
         options.setProxyHost(proxyHost);
+        int proxyPort = 9150;
         options.setProxyPort(proxyPort);
-        options.setProxyType(proxyType);
+        options.setProxyType(DefaultBotOptions.ProxyType.SOCKS5);
 
         return options;
     }

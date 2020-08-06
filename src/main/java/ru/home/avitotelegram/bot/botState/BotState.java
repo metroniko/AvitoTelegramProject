@@ -7,5 +7,6 @@ public enum BotState {
     ASK_SOMETHING,
     ASK_CARNAME,
     ASK_MODEL,
+    ASK_PRICE,
     PARSE_AUTO,
 }

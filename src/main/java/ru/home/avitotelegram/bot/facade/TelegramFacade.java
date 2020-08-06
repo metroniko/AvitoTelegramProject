@@ -18,7 +18,7 @@ public class TelegramFacade {
 
     private BotHandlerContext handlerContext;
     private UserCache userCache;
-    private static  final Logger log = (Logger) LoggerFactory.getLogger(TelegramFacade.class);
+    private static  final Logger log = LoggerFactory.getLogger(TelegramFacade.class);
 
 
 
@@ -29,8 +29,9 @@ public class TelegramFacade {
     }
     public SendMessage handleMessage(Update update) {
 
-        Message message = update.getMessage();
 
+        Message message = update.getMessage();
+        SendMessage sendMessage = null;
         long chatId = message.getFrom().getId();
         String messageText = message.getText();
         if (message.hasText()) {
@@ -38,9 +39,9 @@ public class TelegramFacade {
                     message.getFrom().getUserName(),
                     chatId,
                     messageText);
-            handleInputMessage(message);
+            sendMessage = handleInputMessage(message);
         }
-        return new SendMessage(chatId, "Напишите что нибудь");
+        return sendMessage;
 
     }
 
@@ -50,6 +51,7 @@ public class TelegramFacade {
 
         if (message.getText().equals("/start")) {
             User newUser = new User(message.getChatId());
+            log.info("handleInputMessage new User = {}", newUser);
             botState = BotState.HELLO;
             newUser.setBotState(botState);
             userCache.addUser(newUser);
@@ -58,18 +60,8 @@ public class TelegramFacade {
             return currentHandler.handle(message);
 
         }
+        InputMessageHandler currentHandler = handlerContext.findCurrentContext(message);
 
-        InputMessageHandler currentContext = handlerContext.findCurrentContext(message);
-        currentContext.handle(message);
-
-        User user = userCache.getUserById(message.getChatId());
-
-        if (user.getBotState() == BotState.ASK_SOMETHING) {
-            botState = user.getBotState();
-            handlerContext.getCurrentHandler(botState);
-        }
-
-        InputMessageHandler currentHandler = handlerContext.getCurrentHandler(botState);
         return currentHandler.handle(message);
 
     }

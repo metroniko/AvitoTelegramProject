@@ -8,12 +8,14 @@ import ru.home.avitotelegram.bot.botState.BotState;
 import ru.home.avitotelegram.bot.handle.BotHandlerContext;
 import ru.home.avitotelegram.bot.handle.handlers.InputMessageHandler;
 
-@Component
 @Lazy
+@Component
 public class AskSomethingHandler implements InputMessageHandler {
-    
+
+    @Lazy
     private BotHandlerContext botHandlerContext;
 
+    @Lazy
     public AskSomethingHandler(BotHandlerContext botHandlerContext) {
         this.botHandlerContext = botHandlerContext;
     }

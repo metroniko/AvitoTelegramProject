@@ -1,26 +1,31 @@
 package ru.home.avitotelegram.bot.handle;
 
-import jdk.internal.util.xml.impl.Input;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.home.avitotelegram.bot.botState.BotState;
 import ru.home.avitotelegram.bot.cache.UserCache;
+import ru.home.avitotelegram.bot.facade.TelegramFacade;
 import ru.home.avitotelegram.bot.handle.handlers.InputMessageHandler;
 import ru.home.avitotelegram.entity.User;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import static ru.home.avitotelegram.bot.botState.BotState.ASK_PRICE;
 
 @Component
 public class BotHandlerContext {
 
-    UserCache userCache;
+    private UserCache userCache;
+    private static  final Logger log = (Logger) LoggerFactory.getLogger(BotHandlerContext.class);
 
-    Map<BotState, InputMessageHandler>messageHandler = new HashMap<>();
+    private Map<BotState, InputMessageHandler>messageHandler = new HashMap<>();
 
-    public BotHandlerContext(ArrayList<InputMessageHandler> handlers, UserCache userCache) {
-        handlers.forEach(el -> messageHandler.put(el.getHandlerName(), el));
+    public BotHandlerContext(List<InputMessageHandler> handlers, UserCache userCache) {
+        handlers.forEach(el -> this.messageHandler.put(el.getHandlerName(), el));
         this.userCache = userCache;
     }
 
@@ -32,12 +37,17 @@ public class BotHandlerContext {
 
         Long userId = message.getChatId();
         User user = userCache.getUserById(userId);
+        log.info("findCurrentContext : user = {}", user);
         BotState botState = user.getBotState();
 
+
+        if (botState == BotState.ASK_SOMETHING) return getCurrentHandler(BotState.ASK_SOMETHING);
+
         switch (botState) {
-            case ASK_SOMETHING:
             case ASK_CARNAME:
-                return getCurrentHandler(BotState.ASK_SOMETHING);
+            case ASK_MODEL:
+            case ASK_PRICE:
+                return getCurrentHandler(BotState.SUBSCRIBE_CAR);
         }
 
         return null;

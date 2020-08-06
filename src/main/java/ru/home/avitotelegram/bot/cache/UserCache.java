@@ -30,6 +30,12 @@ public class UserCache {
     }
 
     public void addUser(User user) {
+        List<User> collect = this.users.stream()
+                .filter(user1 -> user1.getUserId() == user.getUserId())
+                .collect(Collectors.toList());
+        if (collect.size() > 0) {
+            return;
+        }
         users.add(user);
     }
     public void updateUserBotState(User user, BotState botState) {
