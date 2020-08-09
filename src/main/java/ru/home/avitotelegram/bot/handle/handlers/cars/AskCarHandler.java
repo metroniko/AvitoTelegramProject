@@ -3,25 +3,25 @@ package ru.home.avitotelegram.bot.handle.handlers.cars;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.home.avitotelegram.avitoparser.ParserAuto;
 import ru.home.avitotelegram.bot.TelegramBot;
 import ru.home.avitotelegram.bot.botState.BotState;
 import ru.home.avitotelegram.bot.cache.UserCache;
-import ru.home.avitotelegram.bot.handle.handlers.InputMessageHandler;
+import ru.home.avitotelegram.bot.handle.handlers.InputCallbackHandler;
 import ru.home.avitotelegram.entity.User;
 import ru.home.avitotelegram.itemInformation.DTO.CarDTO;
 import ru.home.avitotelegram.itemInformation.DTOCollector;
 import ru.home.avitotelegram.itemInformation.fullItemInformation.CarItem;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 @Lazy
 @Component
-public class AskCarHandler implements InputMessageHandler {
+public class AskCarHandler implements InputCallbackHandler {
 
     private BotState botState = BotState.SUBSCRIBE_CAR;
     private UserCache userCache;
@@ -48,19 +48,24 @@ public class AskCarHandler implements InputMessageHandler {
 
     @Override
     public SendMessage handle(Message message) {
-
         String messageText = message.getText();
         Long chatId = message.getChatId();
         User user = userCache.getUserById(chatId);
+        return handleInputMessage(messageText, chatId, user);
+    }
 
+    @Override
+    public SendMessage handleCallbackQuery(CallbackQuery callbackQuery) {
+
+        String data = callbackQuery.getData();
+        Long chatId = callbackQuery.getMessage().getChatId();
+        User user = userCache.getUserById(chatId);
+        return handleInputMessage(data, chatId, user);
+    }
+
+
+    private SendMessage handleInputMessage(String messageText, Long chatId, User user) {
         SendMessage sendMessage = null;
-
-        /**
-         * ПОДРОБНЕЕ ПОСМОТРЕТЬ
-         * ПОДРОБНЕЕ ПОСМОТРЕТЬ
-         * ПОДРОБНЕЕ ПОСМОТРЕТЬ
-         * ПОДРОБНЕЕ ПОСМОТРЕТЬ
-         * ПОДРОБНЕЕ ПОСМОТРЕТЬ*/
 
         if (messageText.equals("auto")) {
             CarDTO carDTO = new CarDTO();
@@ -68,7 +73,7 @@ public class AskCarHandler implements InputMessageHandler {
             dtoCollector.setUserCar(chatId, carDTO.getCarDTOId());
             user.setUsersSubscribes(new HashMap<>());
             userCache.updateUserBotState(user, BotState.ASK_CARNAME);
-            return new SendMessage(message.getChatId(), "Марку?");
+            return new SendMessage(chatId, "Марку?");
         }
         if (user.getBotState().equals(BotState.ASK_CARNAME)) {
 
@@ -77,7 +82,7 @@ public class AskCarHandler implements InputMessageHandler {
             carDTOElement.setCarName(messageText);
             dtoCollector.setCarDTOElement(carDTOElement);
             userCache.updateUserBotState(user, BotState.ASK_MODEL);
-            return new SendMessage(message.getChatId(), "Модель?");
+            return new SendMessage(chatId, "Модель?");
         }
         if (user.getBotState().equals(BotState.ASK_MODEL)) {
             CarDTO carDTOElement = dtoCollector.getCarDTOElement(chatId);
@@ -85,7 +90,7 @@ public class AskCarHandler implements InputMessageHandler {
             carDTOElement.setCarMark(messageText);
             dtoCollector.setCarDTOElement(carDTOElement);
             userCache.updateUserBotState(user, BotState.ASK_PRICE);
-            return new SendMessage(message.getChatId(), "Цена?");
+            return new SendMessage(chatId, "Цена?");
 
         }
         if(user.getBotState().equals(BotState.ASK_PRICE)) {

@@ -1,16 +1,51 @@
 package ru.home.avitotelegram.itemInformation.fullItemInformation;
 
+import org.springframework.context.annotation.Bean;
+import ru.home.avitotelegram.entity.User;
+
+import javax.persistence.*;
+
+@Entity
+@Table(name = "car_items")
 public class CarItem implements AvitoItem {
 
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_generator")
+    @SequenceGenerator(name = "user_id_generator", sequenceName = "user_id_seq", allocationSize = 1)
+    @Id
+    @Column(name = "car_id")
+    private Long id;
 
+    @Column(name = "body_type")
     private String bodyType;
+
+    @Column(name = "brand")
     private String brand;
+
+    @Column(name = "color")
     private String color;
+
+    @Column(name = "fuel_type")
     private String fuelType;
+
+    @Column(name = "image")
     private String image;
+
+    @Column(name = "car_name")
     private String name;
+
+    @Column(name = "price")
     private Integer price;
+
+    @Column(name = "url_car")
     private String urlCar;
+
+    //добавить таблицу с пользователями
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    public CarItem() {
+    }
 
     public CarItem(String bodyType, String brand,
                    String color, String fuelType,

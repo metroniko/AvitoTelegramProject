@@ -7,18 +7,37 @@ import lombok.experimental.FieldDefaults;
 import ru.home.avitotelegram.bot.botState.BotState;
 import ru.home.avitotelegram.entity.typeofsubscribes.TypeOfSubscribes;
 import ru.home.avitotelegram.itemInformation.fullItemInformation.AvitoItem;
+import ru.home.avitotelegram.itemInformation.fullItemInformation.CarItem;
 
+import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Entity
+@Table(name = "Users")
 public class User {
+    /**
+     * ПЕРЕОПРЕДЕЛИТЬ TOSTRING
+     * */
 
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_generator")
+    @SequenceGenerator(name = "user_id_generator", sequenceName = "user_id_seq", allocationSize = 1)
+    @Id
+    @Column(name = "user_id")
     Long userId;
+
+
+    @Column(name = "bot_state")
     BotState botState;
-    Map<TypeOfSubscribes, List<AvitoItem>> usersSubscribes;
+//    Map<TypeOfSubscribes, List<AvitoItem>> usersSubscribes;
+
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    List<CarItem> carItems = new ArrayList<>();
 
 
 
@@ -28,20 +47,23 @@ public class User {
     public void setBotState(BotState botState) { this.botState = botState; }
     public void setUserId(Long userId) { this.userId = userId; }
 
-    public Map<TypeOfSubscribes, List<AvitoItem>> getUsersSubscribes() {
-        return usersSubscribes;
+    public User() {
     }
 
-    public void setUsersSubscribes(Map<TypeOfSubscribes, List<AvitoItem>> usersSubscribes) {
-        this.usersSubscribes = usersSubscribes;
-    }
-    public void updateSubscribes(TypeOfSubscribes typeOfSubscribes, AvitoItem item) {
+//    public Map<TypeOfSubscribes, List<AvitoItem>> getUsersSubscribes() {
+//        return usersSubscribes;
+//    }
 
-        List<AvitoItem> avitoItems = usersSubscribes.get(typeOfSubscribes);
-
-        //avitoItems.stream().filter(element -> element.)
-
-    }
+//    public void setUsersSubscribes(Map<TypeOfSubscribes, List<AvitoItem>> usersSubscribes) {
+//        this.usersSubscribes = usersSubscribes;
+//    }
+//    public void updateSubscribes(TypeOfSubscribes typeOfSubscribes, AvitoItem item) {
+//
+//        List<AvitoItem> avitoItems = usersSubscribes.get(typeOfSubscribes);
+//
+//        //avitoItems.stream().filter(element -> element.)
+//
+//    }
 
     @Override
     public boolean equals(Object o) {

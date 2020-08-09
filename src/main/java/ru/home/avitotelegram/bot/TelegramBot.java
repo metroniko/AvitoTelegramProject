@@ -54,6 +54,6 @@ public class TelegramBot extends TelegramWebhookBot {
 
     @Override
     public String getBotPath() {
-        return "https://b54dbd2e52e7.ngrok.io";
+        return "https://e532deb9cb43.ngrok.io";
     }
 }
