@@ -9,8 +9,8 @@ import javax.persistence.*;
 @Table(name = "car_items")
 public class CarItem implements AvitoItem {
 
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_generator")
-    @SequenceGenerator(name = "user_id_generator", sequenceName = "user_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "car_id_generator")
+    @SequenceGenerator(name = "car_id_generator", sequenceName = "car_id_seq", allocationSize = 1)
     @Id
     @Column(name = "car_id")
     private Long id;
@@ -43,6 +43,14 @@ public class CarItem implements AvitoItem {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public CarItem() {
     }

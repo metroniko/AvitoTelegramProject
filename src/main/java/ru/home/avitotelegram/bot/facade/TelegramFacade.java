@@ -13,6 +13,7 @@ import ru.home.avitotelegram.bot.cache.UserCache;
 import ru.home.avitotelegram.bot.handle.BotHandlerContext;
 import ru.home.avitotelegram.bot.handle.handlers.InputMessageHandler;
 import ru.home.avitotelegram.bot.handle.handlers.askSomething.AskSomethingHandler;
+import ru.home.avitotelegram.bot.repositories.UserRepository;
 import ru.home.avitotelegram.entity.User;
 
 @Controller
@@ -21,14 +22,15 @@ public class TelegramFacade {
     private BotHandlerContext handlerContext;
     private UserCache userCache;
     private static  final Logger log = LoggerFactory.getLogger(TelegramFacade.class);
-
+    private UserRepository userRepository;
 
 
 
     public TelegramFacade(BotHandlerContext handlerContext,
-                          UserCache userCache) {
+                          UserCache userCache, UserRepository userRepository) {
         this.handlerContext = handlerContext;
         this.userCache = userCache;
+        this.userRepository = userRepository;
     }
     public BotApiMethod<?> handleMessage(Update update) {
 
@@ -37,7 +39,6 @@ public class TelegramFacade {
             AskSomethingHandler currentContext = (AskSomethingHandler) handlerContext.findCurrentContext(message1);
             return currentContext.handleCallbackQuery(update.getCallbackQuery());
         }
-
 
         Message message = update.getMessage();
         BotApiMethod<?> sendMessage = null;
@@ -56,7 +57,7 @@ public class TelegramFacade {
 
     private BotApiMethod<?> handleInputMessage(Message message) {
 
-        BotState botState = null;
+        BotState botState;
 
         if (message.getText().equals("/start")) {
 
@@ -64,7 +65,10 @@ public class TelegramFacade {
             log.info("handleInputMessage new User = {}", newUser);
             botState = BotState.HELLO;
             newUser.setBotState(botState);
-            userCache.addUser(newUser);
+            userRepository.save(newUser);
+
+            //старая реализация
+            //userCache.addUser(newUser);
 
             InputMessageHandler currentHandler = handlerContext.getCurrentHandler(botState);
             return currentHandler.handle(message);

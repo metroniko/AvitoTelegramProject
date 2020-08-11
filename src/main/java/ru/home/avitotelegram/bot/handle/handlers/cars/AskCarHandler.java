@@ -10,13 +10,16 @@ import ru.home.avitotelegram.bot.TelegramBot;
 import ru.home.avitotelegram.bot.botState.BotState;
 import ru.home.avitotelegram.bot.cache.UserCache;
 import ru.home.avitotelegram.bot.handle.handlers.InputCallbackHandler;
+import ru.home.avitotelegram.bot.repositories.CarCarcaseRepository;
+import ru.home.avitotelegram.bot.repositories.CarRepository;
+import ru.home.avitotelegram.bot.repositories.UserRepository;
+import ru.home.avitotelegram.entity.CarCarcase;
 import ru.home.avitotelegram.entity.User;
 import ru.home.avitotelegram.itemInformation.DTO.CarDTO;
 import ru.home.avitotelegram.itemInformation.DTOCollector;
 import ru.home.avitotelegram.itemInformation.fullItemInformation.CarItem;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 
 @Lazy
@@ -28,16 +31,25 @@ public class AskCarHandler implements InputCallbackHandler {
     private DTOCollector dtoCollector;
     private ParserAuto parserAuto;
     private TelegramBot telegramBot;
+    private UserRepository userRepository;
+    private CarRepository carRepository;
+    private CarCarcaseRepository carCarcaseRepository;
 
     @Lazy
     public AskCarHandler(UserCache userCache,
                          DTOCollector dtoCollector,
                          ParserAuto parserAuto,
-                         TelegramBot telegramBot) {
+                         TelegramBot telegramBot,
+                         UserRepository userRepository,
+                         CarRepository carRepository,
+                         CarCarcaseRepository carCarcaseRepository) {
         this.userCache = userCache;
         this.dtoCollector = dtoCollector;
         this.parserAuto = parserAuto;
         this.telegramBot = telegramBot;
+        this.userRepository = userRepository;
+        this.carRepository = carRepository;
+        this.carCarcaseRepository = carCarcaseRepository;
     }
 
 
@@ -50,7 +62,9 @@ public class AskCarHandler implements InputCallbackHandler {
     public SendMessage handle(Message message) {
         String messageText = message.getText();
         Long chatId = message.getChatId();
-        User user = userCache.getUserById(chatId);
+
+        User user = userRepository.getUserByUserId(chatId);
+        //User user = userCache.getUserById(chatId);
         return handleInputMessage(messageText, chatId, user);
     }
 
@@ -59,7 +73,8 @@ public class AskCarHandler implements InputCallbackHandler {
 
         String data = callbackQuery.getData();
         Long chatId = callbackQuery.getMessage().getChatId();
-        User user = userCache.getUserById(chatId);
+        //User user = userCache.getUserById(chatId);
+        User user = userRepository.getUserByUserId(chatId);
         return handleInputMessage(data, chatId, user);
     }
 
@@ -71,8 +86,10 @@ public class AskCarHandler implements InputCallbackHandler {
             CarDTO carDTO = new CarDTO();
             dtoCollector.setCarDTOElement(carDTO);
             dtoCollector.setUserCar(chatId, carDTO.getCarDTOId());
-            user.setUsersSubscribes(new HashMap<>());
-            userCache.updateUserBotState(user, BotState.ASK_CARNAME);
+            //user.setUsersSubscribes(new HashMap<>());
+            //userCache.updateUserBotState(user, BotState.ASK_CARNAME);
+            user.setBotState(BotState.ASK_CARNAME);
+            userRepository.save(user);
             return new SendMessage(chatId, "Марку?");
         }
         if (user.getBotState().equals(BotState.ASK_CARNAME)) {
@@ -81,7 +98,9 @@ public class AskCarHandler implements InputCallbackHandler {
             dtoCollector.removeCarDTOElement(carDTOElement);
             carDTOElement.setCarName(messageText);
             dtoCollector.setCarDTOElement(carDTOElement);
-            userCache.updateUserBotState(user, BotState.ASK_MODEL);
+            user.setBotState(BotState.ASK_MODEL);
+            userRepository.save(user);
+            //userCache.updateUserBotState(user, BotState.ASK_MODEL);
             return new SendMessage(chatId, "Модель?");
         }
         if (user.getBotState().equals(BotState.ASK_MODEL)) {
@@ -89,7 +108,9 @@ public class AskCarHandler implements InputCallbackHandler {
             dtoCollector.removeCarDTOElement(carDTOElement);
             carDTOElement.setCarMark(messageText);
             dtoCollector.setCarDTOElement(carDTOElement);
-            userCache.updateUserBotState(user, BotState.ASK_PRICE);
+            user.setBotState(BotState.ASK_PRICE);
+            userRepository.save(user);
+            //userCache.updateUserBotState(user, BotState.ASK_PRICE);
             return new SendMessage(chatId, "Цена?");
 
         }
@@ -98,22 +119,31 @@ public class AskCarHandler implements InputCallbackHandler {
             dtoCollector.removeCarDTOElement(carDTOElement);
             carDTOElement.setCarPrice(messageText);
             dtoCollector.setCarDTOElement(carDTOElement);
-            userCache.updateUserBotState(user, BotState.ASK_SOMETHING);
+            user.setBotState(BotState.ASK_SOMETHING);
+            CarCarcase carCarcase = new CarCarcase();
+            carCarcase.setCarMark(carDTOElement.getCarMark());
+            carCarcase.setCarName(carDTOElement.getCarName());
+            carCarcase.setCarPrice(Long.valueOf(carDTOElement.getCarPrice()));
+
+            //userCache.updateUserBotState(user, BotState.ASK_SOMETHING);
             String[] car = new String[3];
             car[0] = carDTOElement.getCarName();
             car[1] = carDTOElement.getCarMark();
             car[2] = carDTOElement.getCarPrice();
             try {
                 List<CarItem> parse = parserAuto.parse(car);
+                user.addcarItems(carCarcase);
+                carCarcase.setUser(user);
+                userRepository.save(user);
+                //carCarcaseRepository.save(carCarcase);
                 telegramBot.sendCarMessages(chatId ,parse);
                 return new SendMessage(chatId, parse.get(parse.size() - 1).toString());
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-
         }
-
         return sendMessage;
     }
+
+
 }

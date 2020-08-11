@@ -8,6 +8,7 @@ import ru.home.avitotelegram.bot.botState.BotState;
 import ru.home.avitotelegram.bot.cache.UserCache;
 import ru.home.avitotelegram.bot.facade.TelegramFacade;
 import ru.home.avitotelegram.bot.handle.handlers.InputMessageHandler;
+import ru.home.avitotelegram.bot.repositories.UserRepository;
 import ru.home.avitotelegram.entity.User;
 
 import java.util.HashMap;
@@ -19,14 +20,16 @@ import static ru.home.avitotelegram.bot.botState.BotState.ASK_PRICE;
 @Component
 public class BotHandlerContext {
 
+    private static  final Logger log = LoggerFactory.getLogger(BotHandlerContext.class);
     private UserCache userCache;
-    private static  final Logger log = (Logger) LoggerFactory.getLogger(BotHandlerContext.class);
-
     private Map<BotState, InputMessageHandler>messageHandler = new HashMap<>();
+    private UserRepository userRepository;
 
-    public BotHandlerContext(List<InputMessageHandler> handlers, UserCache userCache) {
+    public BotHandlerContext(List<InputMessageHandler> handlers,
+                             UserCache userCache, UserRepository userRepository) {
         handlers.forEach(el -> this.messageHandler.put(el.getHandlerName(), el));
         this.userCache = userCache;
+        this.userRepository = userRepository;
     }
 
     public InputMessageHandler getCurrentHandler(BotState botState) {
@@ -36,7 +39,8 @@ public class BotHandlerContext {
     public InputMessageHandler findCurrentContext(Message message) {
 
         Long userId = message.getChatId();
-        User user = userCache.getUserById(userId);
+        User user = userRepository.getUserByUserId(userId);
+        //User user = userCache.getUserById(userId);
         log.info("findCurrentContext : user = {}", user);
         BotState botState = user.getBotState();
 
