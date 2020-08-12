@@ -27,9 +27,11 @@ public class TelegramBot extends TelegramWebhookBot {
         this.telegramFacade = telegramFacade;
     }
     public void sendCarMessages(Long chatId, List<CarItem> carItems) {
-        carItems.forEach(el -> {
+        carItems.forEach(carItem -> {
             try {
-                execute(new SendMessage(chatId, el.toString()));
+                execute(new SendMessage(chatId, String.format("%s%n -------------------%nНазвание:   %s%nЦвет: %s%nТип Двигателя: %s%n" +
+                                "Цена: %s%nСсылка: %s%n", carItem.getBrand(), carItem.getBodyType(), carItem.getColor(), carItem.getFuelType(),
+                        carItem.getPrice(), carItem.getURL())));
             } catch (TelegramApiException e) {
                 e.printStackTrace();
             }
@@ -54,6 +56,6 @@ public class TelegramBot extends TelegramWebhookBot {
 
     @Override
     public String getBotPath() {
-        return "https://e416430f5b9f.ngrok.io";
+        return "https://7398a12fae5e.ngrok.io";
     }
 }

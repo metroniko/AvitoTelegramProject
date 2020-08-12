@@ -21,8 +21,7 @@ public class ParserAuto implements Parsable {
     @Override
     public List<CarItem> parse(String... string) throws IOException {
 
-        String url = "https://auto.ru/voronezh/cars/"+string[0]+"/"+string[1]+"/used/?price_to="+string[2]+"";
-
+        String url = "https://auto.ru/voronezh/cars/"+string[0]+"/"+string[1]+"/all/?price_to="+string[2]+"&top_days=1";
 
         Elements doc = Jsoup.connect(url).get().select("span[itemtype=\"http://schema.org/Car\"]");
 

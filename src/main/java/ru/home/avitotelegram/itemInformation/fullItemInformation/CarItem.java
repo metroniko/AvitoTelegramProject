@@ -27,6 +27,30 @@ public class CarItem implements AvitoItem {
     @Column(name = "fuel_type")
     private String fuelType;
 
+    public String getBodyType() {
+        return bodyType;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public String getFuelType() {
+        return fuelType;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public String getUrlCar() {
+        return urlCar;
+    }
+
     @Column(name = "image")
     private String image;
 

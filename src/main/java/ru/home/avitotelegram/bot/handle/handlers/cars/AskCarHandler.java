@@ -8,11 +8,9 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.home.avitotelegram.avitoparser.ParserAuto;
 import ru.home.avitotelegram.bot.TelegramBot;
 import ru.home.avitotelegram.bot.botState.BotState;
-import ru.home.avitotelegram.bot.cache.UserCache;
 import ru.home.avitotelegram.bot.handle.handlers.InputCallbackHandler;
-import ru.home.avitotelegram.bot.repositories.CarCarcaseRepository;
-import ru.home.avitotelegram.bot.repositories.CarRepository;
 import ru.home.avitotelegram.bot.repositories.UserRepository;
+import ru.home.avitotelegram.bot.services.CarParseService;
 import ru.home.avitotelegram.entity.CarCarcase;
 import ru.home.avitotelegram.entity.User;
 import ru.home.avitotelegram.itemInformation.DTO.CarDTO;
@@ -27,29 +25,25 @@ import java.util.List;
 public class AskCarHandler implements InputCallbackHandler {
 
     private BotState botState = BotState.SUBSCRIBE_CAR;
-    private UserCache userCache;
     private DTOCollector dtoCollector;
     private ParserAuto parserAuto;
     private TelegramBot telegramBot;
     private UserRepository userRepository;
-    private CarRepository carRepository;
-    private CarCarcaseRepository carCarcaseRepository;
+    private CarParseService carParseService;
+
 
     @Lazy
-    public AskCarHandler(UserCache userCache,
-                         DTOCollector dtoCollector,
+    public AskCarHandler(DTOCollector dtoCollector,
                          ParserAuto parserAuto,
                          TelegramBot telegramBot,
                          UserRepository userRepository,
-                         CarRepository carRepository,
-                         CarCarcaseRepository carCarcaseRepository) {
-        this.userCache = userCache;
+                         CarParseService carParseService) {
         this.dtoCollector = dtoCollector;
         this.parserAuto = parserAuto;
         this.telegramBot = telegramBot;
         this.userRepository = userRepository;
-        this.carRepository = carRepository;
-        this.carCarcaseRepository = carCarcaseRepository;
+        this.carParseService = carParseService;
+
     }
 
 
@@ -130,14 +124,11 @@ public class AskCarHandler implements InputCallbackHandler {
             car[0] = carDTOElement.getCarName();
             car[1] = carDTOElement.getCarMark();
             car[2] = carDTOElement.getCarPrice();
+            user.addcarItems(carCarcase);
+            carCarcase.setUser(user);
+            userRepository.save(user);
             try {
-                List<CarItem> parse = parserAuto.parse(car);
-                user.addcarItems(carCarcase);
-                carCarcase.setUser(user);
-                userRepository.save(user);
-                //carCarcaseRepository.save(carCarcase);
-                telegramBot.sendCarMessages(chatId ,parse);
-                return new SendMessage(chatId, parse.get(parse.size() - 1).toString());
+                return carParseService.getCarMessage(car, chatId);
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -31,7 +31,7 @@ public class User {
 //    Map<TypeOfSubscribes, List<AvitoItem>> usersSubscribes;
 
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     Collection<CarCarcase> carItems = new ArrayList<>();
 
 
@@ -85,5 +85,14 @@ public class User {
     @Override
     public int hashCode() {
         return Objects.hash(botState, carItems);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", botState=" + botState +
+                ", carItems=" + carItems +
+                '}';
     }
 }
