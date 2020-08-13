@@ -22,10 +22,10 @@ public class BotConfiguration {
         DefaultBotOptions options =
                 ApiContext.getInstance(DefaultBotOptions.class);
         String proxyHost = "localhost";
-        options.setProxyHost(proxyHost);
-        int proxyPort = 9150;
-        options.setProxyPort(proxyPort);
-        options.setProxyType(DefaultBotOptions.ProxyType.SOCKS5);
+//        options.setProxyHost(proxyHost);
+//        int proxyPort = 9150;
+//        options.setProxyPort(proxyPort);
+//        options.setProxyType(DefaultBotOptions.ProxyType.SOCKS5);
 
         return options;
     }
