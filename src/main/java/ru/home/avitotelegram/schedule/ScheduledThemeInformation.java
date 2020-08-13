@@ -44,7 +44,7 @@ public class ScheduledThemeInformation {
                 car[1] = carCarcase.getCarMark();
                 car[2] = String.valueOf(carCarcase.getCarPrice());
                 try {
-                     carParseService.getCarMessage(car, userId);
+                     carParseService.getCarMessage(car, userId, false);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

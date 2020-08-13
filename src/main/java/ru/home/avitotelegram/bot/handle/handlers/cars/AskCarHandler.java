@@ -128,7 +128,7 @@ public class AskCarHandler implements InputCallbackHandler {
             carCarcase.setUser(user);
             userRepository.save(user);
             try {
-                return carParseService.getCarMessage(car, chatId);
+                return carParseService.getCarMessage(car, chatId, true);
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -21,8 +21,8 @@ public class CarParseService {
         this.telegramBot = telegramBot;
     }
 
-    public SendMessage getCarMessage(String[] car, Long chatId) throws IOException {
-            List<CarItem> parse = parserAuto.parse(car);
+    public SendMessage getCarMessage(String[] car, Long chatId, boolean isFirst) throws IOException {
+            List<CarItem> parse = parserAuto.parse(car, isFirst);
             //carCarcaseRepository.save(carCarcase);
             if (parse.size() == 0) {
                 return new SendMessage(chatId, "Нет таких машин");

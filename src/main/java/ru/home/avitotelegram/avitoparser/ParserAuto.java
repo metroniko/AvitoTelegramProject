@@ -14,14 +14,18 @@ import java.util.stream.Collectors;
 
 
 @Component
-public class ParserAuto implements Parsable {
+public class ParserAuto {
 
     private static  final Logger log = LoggerFactory.getLogger(ParserAuto.class);
 
-    @Override
-    public List<CarItem> parse(String... string) throws IOException {
+
+    public List<CarItem> parse(String[] string, boolean isFirst) throws IOException {
 
         String url = "https://auto.ru/voronezh/cars/"+string[0]+"/"+string[1]+"/all/?price_to="+string[2]+"&top_days=1";
+
+        if (isFirst) {
+            url = "https://auto.ru/voronezh/cars/"+string[0]+"/"+string[1]+"/all/?price_to="+string[2];
+        }
 
         Elements doc = Jsoup.connect(url).get().select("span[itemtype=\"http://schema.org/Car\"]");
 
