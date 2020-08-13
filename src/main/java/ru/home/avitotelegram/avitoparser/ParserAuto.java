@@ -21,10 +21,10 @@ public class ParserAuto {
 
     public List<CarItem> parse(String[] string, boolean isFirst) throws IOException {
 
-        String url = "https://auto.ru/voronezh/cars/"+string[0]+"/"+string[1]+"/all/?price_to="+string[2]+"&top_days=1";
+        String url = "http://auto.ru/voronezh/cars/"+string[0]+"/"+string[1]+"/all/?price_to="+string[2]+"&top_days=1";
 
         if (isFirst) {
-            url = "https://auto.ru/voronezh/cars/"+string[0]+"/"+string[1]+"/all/?price_to="+string[2];
+            url = "http://auto.ru/voronezh/cars/"+string[0]+"/"+string[1]+"/all/?price_to="+string[2];
         }
         log.info("url info:{}", url);
         Elements doc = Jsoup.connect(url).timeout(20000).get().select("span[itemtype=\"http://schema.org/Car\"]");
