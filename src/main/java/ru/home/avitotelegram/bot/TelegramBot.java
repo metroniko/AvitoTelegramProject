@@ -56,6 +56,6 @@ public class TelegramBot extends TelegramWebhookBot {
 
     @Override
     public String getBotPath() {
-        return "https://avitotelegrambot.herokuapp.com/";
+        return "http://avitotelegrambot.herokuapp.com/";
     }
 }
