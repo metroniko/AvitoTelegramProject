@@ -27,7 +27,9 @@ public class ParserAuto {
             url = "http://auto.ru/voronezh/cars/"+string[0]+"/"+string[1]+"/all/?price_to="+string[2];
         }
         log.info("url info:{}", url);
-        Elements doc = Jsoup.connect(url).timeout(20000).get().select("span[itemtype=\"http://schema.org/Car\"]");
+        Elements doc = Jsoup.connect(url)
+                .userAgent("Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.3")
+                .get().select("span[itemtype=\"http://schema.org/Car\"]");
 
         List<CarItem> autoCollection = doc.parallelStream().map(el -> {
             String bodyType = el.select("meta[itemprop=\"bodyType\"]")
