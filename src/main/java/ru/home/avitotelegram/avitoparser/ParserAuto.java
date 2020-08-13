@@ -26,7 +26,7 @@ public class ParserAuto {
         if (isFirst) {
             url = "https://auto.ru/voronezh/cars/"+string[0]+"/"+string[1]+"/all/?price_to="+string[2];
         }
-
+        log.info("url info:{}", url);
         Elements doc = Jsoup.connect(url).get().select("span[itemtype=\"http://schema.org/Car\"]");
 
         List<CarItem> autoCollection = doc.parallelStream().map(el -> {
