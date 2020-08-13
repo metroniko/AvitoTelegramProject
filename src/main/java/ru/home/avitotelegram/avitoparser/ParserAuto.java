@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import ru.home.avitotelegram.itemInformation.fullItemInformation.CarItem;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,7 +28,8 @@ public class ParserAuto {
         if (isFirst) {
             url = "http://auto.ru/voronezh/cars/"+string[0]+"/"+string[1]+"/all/?price_to="+string[2];
         }
-        Elements doc = Jsoup.connect(url)
+        Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("138.201.5.34", 8080));
+        Elements doc = Jsoup.connect(url).proxy(proxy)
                 .userAgent("Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36")
                 .get().select("span[itemtype=\"http://schema.org/Car\"]");
         log.info("doc info:{}, url info:{}", doc, url);
