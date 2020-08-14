@@ -28,7 +28,7 @@ public class ParserAuto {
         if (isFirst) {
             url = "http://auto.ru/voronezh/cars/"+string[0]+"/"+string[1]+"/all/?price_to="+string[2];
         }
-        Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("188.255.120.52", 8080));
+        Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("89.223.28.195", 3128));
         Elements doc = Jsoup.connect(url)
                 .proxy(proxy)
                 //.userAgent("Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36")
