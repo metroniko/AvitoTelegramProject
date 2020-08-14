@@ -1,5 +1,9 @@
 package ru.home.avitotelegram.avitoparser;
 
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.DomNode;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
@@ -24,6 +28,19 @@ public class ParserAuto {
     public List<CarItem> parse(String[] string, boolean isFirst) throws IOException {
 
         String url = "http://auto.ru/voronezh/cars/"+string[0]+"/"+string[1]+"/all/?price_to="+string[2]+"&top_days=1";
+        WebClient client = new WebClient();
+        client.getOptions().setCssEnabled(false);
+        client.getOptions().setJavaScriptEnabled(false);
+
+        try {
+            HtmlPage page = client.getPage("http://auto.ru/voronezh/cars/nissan/almera/all/?price_to=500000");
+            HtmlElement body = page.getBody();
+            DomNode domNode = body.querySelector("span[itemtype=\"http://schema.org/Car\"]");
+            domNode.getPage();
+            log.info("page: {}", domNode.getPage());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         if (isFirst) {
             url = "http://auto.ru/voronezh/cars/"+string[0]+"/"+string[1]+"/all/?price_to="+string[2];
